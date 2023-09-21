@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using sqlserver_sp_extractor.Models;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 
 namespace sqlserver_sp_extractor.Services
@@ -46,6 +47,21 @@ namespace sqlserver_sp_extractor.Services
                     UseShellExecute = true
                 }
             }.Start();
+        }
+
+        public static void AddConnection(Connection connection)
+        {
+            string configurationJson = File.ReadAllText(configurationFilePath);
+            Configuration configuration = JsonConvert.DeserializeObject<Configuration>(configurationJson);
+
+            if (configuration is not null)
+            {
+                using FileStream fs = File.Create(configurationFilePath);
+                configuration.Connections.Add(connection);
+                configurationJson = JsonConvert.SerializeObject(configuration, Formatting.Indented);
+                byte[] jsonBytes = Encoding.UTF8.GetBytes(configurationJson);
+                fs.Write(jsonBytes, 0, jsonBytes.Length);
+            }
         }
 
         public static Configuration GetConfiguration()

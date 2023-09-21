@@ -39,14 +39,7 @@
             }
         }
 
-        public void SelectNext()
-        {
-            selectedIndex = Math.Min(selectedIndex + 1, commands.Count - 1);
-        }
-
-        public void SelectPrevious()
-        {
-            selectedIndex = Math.Max(selectedIndex - 1, 0);
-        }
+        public void SelectNext() => selectedIndex = selectedIndex < commands.Count - 1 ? selectedIndex + 1 : 0;
+        public void SelectPrevious() => selectedIndex = selectedIndex == 0 ? commands.Count - 1 : selectedIndex - 1;
     }
 }

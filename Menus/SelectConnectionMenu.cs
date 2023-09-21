@@ -40,12 +40,20 @@ namespace sqlserver_sp_extractor.Menus
                         commandManager.SelectNext();
                         break;
 
+                    case ConsoleKey.Tab:
+                        if (keyInfo.Modifiers == ConsoleModifiers.Shift)
+                        {
+                            commandManager.SelectPrevious();
+                        }
+                        else
+                        {
+                            commandManager.SelectNext();
+                        }
+                        break;
+
                     case ConsoleKey.Enter:
                         commandManager.ExecuteSelectedCommand();
-                        if (commandManager.selectedIndex == 2)
-                        {
-                            running = false;
-                        }
+                        running = false;
                         break;
                 }
             }

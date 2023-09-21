@@ -1,31 +1,37 @@
-﻿namespace sqlserver_sp_extractor.Menus
+﻿using sqlserver_sp_extractor.Commands;
+using sqlserver_sp_extractor.Models;
+using sqlserver_sp_extractor.Services;
+
+namespace sqlserver_sp_extractor.Menus
 {
     public class CreateNewConnectionMenu
     {
-        private List<string> Attributes = new()
+        private readonly List<string> Attributes = new()
         {
             "Name: ",
+            "Server Name: ",
             "DataBase: ",
             "Login: ",
-            "Password: "
+            "Password: ",
+            "1.Save",
+            "2.GoBack"
         };
 
         private List<int> AttributesBaseLength = new()
         {
             6,
+            13,
             10,
             7,
             10
         };
 
         int selectedIndex = 0;
-        bool exitConfirmation = false;
-        bool saveConfirmation = false;
+        bool running = true;
+        bool saveError = false;
 
         public void Show()
         {
-            bool running = true;
-
             WriteConsole();
             while (running)
             {
@@ -33,54 +39,86 @@
                 switch (keyInfo.Key)
                 {
                     case ConsoleKey.UpArrow:
+                        saveError = false;
                         SelectPrevious();
                         break;
                     case ConsoleKey.DownArrow:
+                        saveError = false;
                         SelectNext();
+                        break;
+                    case ConsoleKey.Tab:
+                        saveError = false;
+                        if (keyInfo.Modifiers == ConsoleModifiers.Shift)
+                        {
+                            SelectPrevious();
+                        }
+                        else
+                        {
+                            SelectNext();
+                        }
                         break;
                     case ConsoleKey.Backspace:
                         RemoveText();
                         break;
                     case ConsoleKey.Escape:
-                        exitConfirmation = true;
+                        if (selectedIndex < 6)
+                        {
+                            selectedIndex = 6;
+                        }
                         break;
                     case ConsoleKey.Enter:
-                        //saveConfirmation = true;
+                        if (selectedIndex < 5)
+                        {
+                            selectedIndex = 5;
+                        }
+                        else if (selectedIndex == 5)
+                        {
+                            saveError = Save();
+                        }
+                        else if (selectedIndex == 6)
+                        {
+                            running = false;
+                            new MainMenuCommand("").Execute();
+                        }
+
                         break;
                     default:
-                        ConcatText(keyInfo.KeyChar);
+                        if (selectedIndex < 5)
+                        {
+                            ConcatText(keyInfo.KeyChar);
+                        }
                         break;
 
+
                 }
-                WriteConsole(saveConfirmation, exitConfirmation);
+
+                if (running)
+                {
+                    WriteConsole(saveError);
+                }
             }
         }
-        private void WriteConsole(bool saveConfirmation = false, bool exitConfirmation = false)
+        private void WriteConsole(bool saveError = false)
         {
             Console.Clear();
             for (int i = 0; i < Attributes.Count; i++)
             {
-                if (!saveConfirmation && !exitConfirmation &&i == selectedIndex)
+                if (i == selectedIndex)
                 {
                     Console.ForegroundColor = ConsoleColor.Blue;
                 }
                 Console.WriteLine(Attributes[i]);
                 Console.ResetColor();
             }
-
-            if (exitConfirmation)
+            if (saveError)
             {
                 Console.WriteLine();
-                Console.ForegroundColor = ConsoleColor.Blue;
-                Console.WriteLine("Exit? ");
-                Console.ResetColor();
-                Console.WriteLine("\"ENTER\" - YES");
-                Console.WriteLine("\"ESC\"   - NO");
+                Console.WriteLine("Fill in all fields!");
             }
 
         }
-        private void SelectNext() => selectedIndex = selectedIndex == 3 ? 0 : selectedIndex + 1;
-        private void SelectPrevious() => selectedIndex = selectedIndex == 0 ? 3 : selectedIndex - 1;
+        private void SelectNext() => selectedIndex = selectedIndex == 6 ? 0 : selectedIndex + 1;
+        private void SelectPrevious() => selectedIndex = selectedIndex == 0 ? 6 : selectedIndex - 1;
         private void ConcatText(char c) => Attributes[selectedIndex] += c;
         private void RemoveText()
         {
@@ -88,6 +126,37 @@
             {
                 Attributes[selectedIndex] = Attributes[selectedIndex][..^1];
             }
+        }
+        private bool Save()
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                if (Attributes[i].Length == AttributesBaseLength[i])
+                {
+                    return true;
+                }
+            }
+
+            string name = Attributes[0].Substring(AttributesBaseLength[0]);
+            string serverName = Attributes[1].Substring(AttributesBaseLength[1]);
+            string dataBase = Attributes[2].Substring(AttributesBaseLength[2]);
+            string login = Attributes[3].Substring(AttributesBaseLength[3]);
+            string password = Attributes[4].Substring(AttributesBaseLength[4]);
+
+            Connection connection = new()
+            {
+                Name = name,
+                ServerName = serverName,
+                DataBase = dataBase,
+                Login = login,
+                Password = password
+            };
+
+            ConfigurationService.AddConnection(connection);
+            running = false;
+            new MainMenuCommand("").Execute();
+
+            return false;
         }
     }
 }
