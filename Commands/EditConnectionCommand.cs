@@ -4,20 +4,23 @@ using sqlserver_sp_extractor.Services;
 
 namespace sqlserver_sp_extractor.Commands
 {
-    internal class SelectConnectionCommand : Command
+    internal class EditConnectionCommand : Command
     {
-        public SelectConnectionCommand(string name) : base(name) { }
+        public EditConnectionCommand(string name) : base(name)
+        {
+        }
         public override void Execute()
         {
             Configuration configuration = ConfigurationService.GetConfiguration();
 
             if (configuration is not null && configuration.Connections.Count > 0)
             {
-                Command[] commands = configuration.Connections
-                  .Select(connection => new SelectItemCommand(connection.Name))
-                  .ToArray();
 
-                commands = commands.Concat(new Command[] { new MainMenuCommand("GoBack") }).ToArray();
+                Command[] commands = configuration.Connections
+                    .Select(connection => new DeleteItemCommand(connection.Name))
+                    .ToArray();
+
+                commands = commands.Concat(new Command[] { new ManageConnectionsCommand("GoBack") }).ToArray();
 
                 SelectConnectionMenu.Show(commands);
             }

@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using sqlserver_sp_extractor.Menus;
 
 namespace sqlserver_sp_extractor.Commands
 {
-    internal class ManageConnectionsCommand
+    internal class ManageConnectionsCommand : Command
     {
+        public ManageConnectionsCommand(string name) : base(name)
+        {
+        }
+        public override void Execute()
+        {
+            ManageConnectionsMenu.Show();
+        }
     }
 }

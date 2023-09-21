@@ -6,21 +6,14 @@ namespace sqlserver_sp_extractor.Menus
 {
     public class SelectConnectionMenu
     {
-        public static void Show()
+        public static void Show<TCommand>(TCommand[] commands) where TCommand : Command
         {
             CommandManager commandManager = new();
 
-            Configuration configuration = ConfigurationService.GetConfiguration();
-
-            if (configuration is not null && configuration.Connections.Count > 0)
+            foreach (var command in commands)
             {
-                foreach (var connection in configuration.Connections)
-                {
-                    commandManager.AddCommand(new SelectItemCommand(connection.Name));
-                }
+                commandManager.AddCommand(command);
             }
-
-            commandManager.AddCommand(new MainMenuCommand("GoBack"));
 
             bool running = true;
 

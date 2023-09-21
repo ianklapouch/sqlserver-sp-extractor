@@ -4,9 +4,9 @@ using sqlserver_sp_extractor.Services;
 
 namespace sqlserver_sp_extractor.Menus
 {
-    public class CreateNewConnectionMenu
+    public static class CreateNewConnectionMenu
     {
-        private readonly List<string> Attributes = new()
+        private static readonly List<string> Attributes = new()
         {
             "Name: ",
             "Server Name: ",
@@ -17,7 +17,7 @@ namespace sqlserver_sp_extractor.Menus
             "2.GoBack"
         };
 
-        private List<int> AttributesBaseLength = new()
+        private static List<int> AttributesBaseLength = new()
         {
             6,
             13,
@@ -26,11 +26,11 @@ namespace sqlserver_sp_extractor.Menus
             10
         };
 
-        int selectedIndex = 0;
-        bool running = true;
-        bool saveError = false;
+        static int  selectedIndex = 0;
+        static bool running = true;
+        static bool saveError = false;
 
-        public void Show()
+        public static void Show()
         {
             WriteConsole();
             while (running)
@@ -98,7 +98,7 @@ namespace sqlserver_sp_extractor.Menus
                 }
             }
         }
-        private void WriteConsole(bool saveError = false)
+        private static void WriteConsole(bool saveError = false)
         {
             Console.Clear();
             for (int i = 0; i < Attributes.Count; i++)
@@ -117,17 +117,17 @@ namespace sqlserver_sp_extractor.Menus
             }
 
         }
-        private void SelectNext() => selectedIndex = selectedIndex == 6 ? 0 : selectedIndex + 1;
-        private void SelectPrevious() => selectedIndex = selectedIndex == 0 ? 6 : selectedIndex - 1;
-        private void ConcatText(char c) => Attributes[selectedIndex] += c;
-        private void RemoveText()
+        private static void SelectNext() => selectedIndex = selectedIndex == 6 ? 0 : selectedIndex + 1;
+        private static void SelectPrevious() => selectedIndex = selectedIndex == 0 ? 6 : selectedIndex - 1;
+        private static void ConcatText(char c) => Attributes[selectedIndex] += c;
+        private static void RemoveText()
         {
             if (Attributes[selectedIndex].Length > AttributesBaseLength[selectedIndex])
             {
                 Attributes[selectedIndex] = Attributes[selectedIndex][..^1];
             }
         }
-        private bool Save()
+        private static bool Save()
         {
             for (int i = 0; i < 4; i++)
             {

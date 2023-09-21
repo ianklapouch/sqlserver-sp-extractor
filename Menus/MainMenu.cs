@@ -9,7 +9,7 @@ namespace sqlserver_sp_extractor.Menus
             CommandManager commandManager = new();
 
             commandManager.AddCommand(new SelectConnectionCommand("Select connection"));
-            commandManager.AddCommand(new CreateNewConnectionCommand("Create new connection"));
+            commandManager.AddCommand(new ManageConnectionsCommand("Manage connections"));
             commandManager.AddCommand(new OpenConfigurationFileCommand("Open configuration file"));
             commandManager.AddCommand(new ExitCommand("Exit"));
 

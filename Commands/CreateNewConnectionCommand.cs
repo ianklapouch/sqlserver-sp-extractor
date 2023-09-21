@@ -9,8 +9,7 @@ namespace sqlserver_sp_extractor.Commands
         }
         public override void Execute()
         {
-            CreateNewConnectionMenu createNewConnectionMenu = new();
-            createNewConnectionMenu.Show();
+            CreateNewConnectionMenu.Show();
         }
     }
 }

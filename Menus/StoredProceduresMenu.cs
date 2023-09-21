@@ -7,6 +7,7 @@ namespace sqlserver_sp_extractor.Menus
     {
         public static void Show(Connection connection)
         {
+            Console.CursorVisible = true;
             Console.Clear();
             Console.WriteLine("Enter list of stored procedures (comma separated):");
 

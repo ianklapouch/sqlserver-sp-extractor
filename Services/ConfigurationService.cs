@@ -1,7 +1,10 @@
 ﻿using Newtonsoft.Json;
 using sqlserver_sp_extractor.Models;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace sqlserver_sp_extractor.Services
@@ -10,36 +13,31 @@ namespace sqlserver_sp_extractor.Services
     {
         private static readonly string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         private static readonly string configurationFolderPath = Path.Combine(appDataPath, "SQLServerSpExtractor");
-        private static readonly string configurationFilePath = Path.Combine(appDataPath, "SQLServerSpExtractor\\configuration.json");
+        private static readonly string configurationFilePath = Path.Combine(configurationFolderPath, "configuration.json");
+
         public static void CheckConfigurations()
         {
-            CheckDirectory(configurationFolderPath);
-            CheckFile(configurationFilePath);
+            EnsureConfigFileExists();
         }
 
-        static void CheckDirectory(string path)
+        private static void EnsureConfigFileExists()
         {
-            if (!Directory.Exists(path))
+            if (!File.Exists(configurationFilePath))
             {
-                Directory.CreateDirectory(path);
+                Configuration configuration = new Configuration();
+                SaveConfiguration(configuration);
             }
         }
 
-        static void CheckFile(string path)
+        private static void SaveConfiguration(Configuration configuration)
         {
-            if (!File.Exists(path))
-            {
-                using FileStream fs = File.Create(path);
-
-                Configuration configuration = new();
-                string configurationJson = JsonConvert.SerializeObject(configuration, Formatting.Indented);
-                byte[] jsonBytes = Encoding.UTF8.GetBytes(configurationJson);
-                fs.Write(jsonBytes, 0, jsonBytes.Length);
-            }
+            string configurationJson = JsonConvert.SerializeObject(configuration, Formatting.Indented);
+            File.WriteAllText(configurationFilePath, configurationJson);
         }
 
         public static void OpenConfigurationFile()
         {
+            EnsureConfigFileExists();
             new Process
             {
                 StartInfo = new ProcessStartInfo(configurationFilePath)
@@ -51,41 +49,32 @@ namespace sqlserver_sp_extractor.Services
 
         public static void AddConnection(Connection connection)
         {
-            string configurationJson = File.ReadAllText(configurationFilePath);
-            Configuration configuration = JsonConvert.DeserializeObject<Configuration>(configurationJson);
-
-            if (configuration is not null)
-            {
-                using FileStream fs = File.Create(configurationFilePath);
-                configuration.Connections.Add(connection);
-                configurationJson = JsonConvert.SerializeObject(configuration, Formatting.Indented);
-                byte[] jsonBytes = Encoding.UTF8.GetBytes(configurationJson);
-                fs.Write(jsonBytes, 0, jsonBytes.Length);
-            }
+            EnsureConfigFileExists();
+            Configuration configuration = GetConfiguration();
+            configuration.Connections.Add(connection);
+            SaveConfiguration(configuration);
         }
 
         public static Configuration GetConfiguration()
         {
+            EnsureConfigFileExists();
             string configurationJson = File.ReadAllText(configurationFilePath);
-            return JsonConvert.DeserializeObject<Configuration>(configurationJson);
+            return JsonConvert.DeserializeObject<Configuration>(configurationJson) ?? new Configuration();
         }
 
         public static Connection? GetConnectionByName(string name)
         {
-            string configurationJson = File.ReadAllText(configurationFilePath);
-            if (string.IsNullOrEmpty(configurationJson))
-            {
-                return null;
-            }
+            EnsureConfigFileExists();
+            Configuration configuration = GetConfiguration();
+            return configuration.Connections.FirstOrDefault(connection => connection.Name == name);
+        }
 
-            Configuration configuration = JsonConvert.DeserializeObject<Configuration>(configurationJson);
-            Connection connection = configuration.Connections.FirstOrDefault(connection => connection.Name == name);
-            if (connection is not null)
-            {
-                return connection;
-            }
-
-            return null;
+        public static void DeleteConnection(string name)
+        {
+            EnsureConfigFileExists();
+            Configuration configuration = GetConfiguration();
+            configuration.Connections.RemoveAll(connection => connection.Name == name);
+            SaveConfiguration(configuration);
         }
     }
 }
