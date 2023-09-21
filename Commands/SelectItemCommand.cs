@@ -18,7 +18,7 @@ namespace sqlserver_sp_extractor.Commands
             Connection connection = ConfigurationService.GetConnectionByName(name);
             if (connection is not null)
             {
-                StoredProceduresMenu.Show(connection);
+                ExtractProceduresMenu.Show(connection);
             }
         }
     }

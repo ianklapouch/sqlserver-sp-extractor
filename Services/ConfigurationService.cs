@@ -38,13 +38,20 @@ namespace sqlserver_sp_extractor.Services
         public static void OpenConfigurationFile()
         {
             EnsureConfigFileExists();
-            new Process
+            //new Process
+            //{
+            //    StartInfo = new ProcessStartInfo(configurationFilePath)
+            //    {
+            //        UseShellExecute = true
+            //    }
+            //}.Start();
+
+            ProcessStartInfo startInfo = new ProcessStartInfo(configurationFilePath)
             {
-                StartInfo = new ProcessStartInfo(configurationFilePath)
-                {
-                    UseShellExecute = true
-                }
-            }.Start();
+                UseShellExecute = true
+            };
+
+            Process.Start(startInfo);
         }
 
         public static void AddConnection(Connection connection)

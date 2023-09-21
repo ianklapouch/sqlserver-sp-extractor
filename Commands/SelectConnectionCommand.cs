@@ -7,6 +7,7 @@ namespace sqlserver_sp_extractor.Commands
     internal class SelectConnectionCommand : Command
     {
         public SelectConnectionCommand(string name) : base(name) { }
+   
         public override void Execute()
         {
             Configuration configuration = ConfigurationService.GetConfiguration();

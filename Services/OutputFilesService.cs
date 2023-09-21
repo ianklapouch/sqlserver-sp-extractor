@@ -25,13 +25,20 @@ namespace sqlserver_sp_extractor.Services
 
         public static void OpenOutputFilesDirectory()
         {
-            new Process
+            //new Process
+            //{
+            //    StartInfo = new ProcessStartInfo(outputFilesPath)
+            //    {
+            //        UseShellExecute = true
+            //    }
+            //}.Start();
+
+            ProcessStartInfo startInfo = new ProcessStartInfo(outputFilesPath)
             {
-                StartInfo = new ProcessStartInfo(outputFilesPath)
-                {
-                    UseShellExecute = true
-                }
-            }.Start();
+                UseShellExecute = true
+            };
+
+            Process.Start(startInfo);
         }
     }
 }
