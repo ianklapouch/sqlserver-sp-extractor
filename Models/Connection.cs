@@ -4,15 +4,6 @@ namespace sqlserver_sp_extractor.Models
 {
     public class Connection
     {
-        public Connection() { }
-        public Connection(string name, string serverName, string dataBase, string login, string password)
-        {
-            Name = name;
-            ServerName = serverName;
-            DataBase = dataBase;
-            Login = login;
-            Password = password;
-        }
         [JsonProperty("name")]
         public required string Name { get; set; }
         [JsonProperty("serverName")]

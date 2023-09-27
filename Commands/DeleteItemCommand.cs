@@ -1,5 +1,4 @@
 ﻿using sqlserver_sp_extractor.Menus;
-using sqlserver_sp_extractor.Models;
 using sqlserver_sp_extractor.Services;
 
 namespace sqlserver_sp_extractor.Commands
@@ -15,7 +14,7 @@ namespace sqlserver_sp_extractor.Commands
 
         public override void Execute()
         {
-            ConfigurationService.DeleteConnection(name);
+            ConnectionsService.DeleteConnection(name);
             MainMenu.Show();
         }
     }

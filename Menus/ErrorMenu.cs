@@ -2,26 +2,12 @@
 
 namespace sqlserver_sp_extractor.Menus
 {
-    public class SuccessMenu
+    public class ErrorMenu
     {
-        public static void Show(int generated, int inserted, string outputFilesPath)
+        public static void Show()
         {
-
-            string menuTitleMessage;
-
-            if (generated == inserted)
-            {
-                menuTitleMessage = "Files successfully generated in the \"Documents/SQLServerSpExtractor\" directory!";
-            }
-            else
-            {
-                menuTitleMessage = $"{generated} of the {inserted} stored procedures were generated the \"Documents/SQLServerSpExtractor\" directory!";
-            }
-
-
             CommandManager commandManager = new();
 
-            commandManager.AddCommand(new OpenOutputFilesDirectoryCommand("Open the output files directory"));
             commandManager.AddCommand(new MainMenuCommand("Return to main menu"));
             commandManager.AddCommand(new ExitCommand("Exit"));
 
@@ -29,7 +15,7 @@ namespace sqlserver_sp_extractor.Menus
 
             while (running)
             {
-                commandManager.DisplayMenu(menuTitleMessage);
+                commandManager.DisplayMenu("No stored procedures found, check the name of the inserted procedures and the connection to the database!");
 
                 ConsoleKeyInfo keyInfo = Console.ReadKey(true);
 

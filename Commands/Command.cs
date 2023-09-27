@@ -9,6 +9,5 @@
             Name = name;
         }
         public abstract void Execute();
-     
     }
 }

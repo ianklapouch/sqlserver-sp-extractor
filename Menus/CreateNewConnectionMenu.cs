@@ -152,7 +152,7 @@ namespace sqlserver_sp_extractor.Menus
                 Password = password
             };
 
-            ConfigurationService.AddConnection(connection);
+            ConnectionsService.CreateConnection(connection);
             running = false;
             new MainMenuCommand("").Execute();
 

@@ -9,7 +9,7 @@ namespace sqlserver_sp_extractor.Commands
         }
         public override void Execute()
         {
-            ConfigurationService.OpenConfigurationFile();
+            ConnectionsService.OpenConfigurationFile();
         }
     }
 }

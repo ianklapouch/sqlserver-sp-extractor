@@ -15,8 +15,8 @@ namespace sqlserver_sp_extractor.Commands
 
         public override void Execute()
         {
-            Connection connection = ConfigurationService.GetConnectionByName(name);
-
+            Connection connection = ConnectionsService.GetConnectionByName(name);
+            EditConnectionMenu.Show(connection);
         }
     }
 }

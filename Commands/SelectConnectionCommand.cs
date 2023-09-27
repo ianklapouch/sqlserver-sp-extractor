@@ -10,11 +10,11 @@ namespace sqlserver_sp_extractor.Commands
    
         public override void Execute()
         {
-            Configuration configuration = ConfigurationService.GetConfiguration();
+            List<Connection> connections = ConnectionsService.GetConnections();
 
-            if (configuration is not null && configuration.Connections.Count > 0)
+            if (connections.Any())
             {
-                Command[] commands = configuration.Connections
+                Command[] commands = connections
                   .Select(connection => new SelectItemCommand(connection.Name))
                   .ToArray();
 
