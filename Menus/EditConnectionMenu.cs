@@ -6,7 +6,7 @@ namespace sqlserver_sp_extractor.Menus
 {
     internal class EditConnectionMenu
     {
-        private static readonly List<string> Attributes = new()
+        private readonly List<string> Attributes = new()
         {
             "Name: ",
             "Server Name: ",
@@ -17,7 +17,7 @@ namespace sqlserver_sp_extractor.Menus
             "2.GoBack"
         };
 
-        private static List<int> AttributesBaseLength = new()
+        private List<int> AttributesBaseLength = new()
         {
             6,
             13,
@@ -26,11 +26,14 @@ namespace sqlserver_sp_extractor.Menus
             10
         };
 
-        static int selectedIndex = 0;
-        static bool running = true;
-        static bool saveError = false;
-        public static void Show(Connection connection)
+        int currentConnectionIndex = 0;
+        int selectedIndex = 0;
+        bool running = true;
+        bool saveError = false;
+
+        public void Show(Connection connection, int index)
         {
+            currentConnectionIndex = index;
             LoadConnection(connection);
 
             WriteConsole();
@@ -99,7 +102,7 @@ namespace sqlserver_sp_extractor.Menus
                 }
             }
         }
-        private static void LoadConnection(Connection connection)
+        private void LoadConnection(Connection connection)
         {
             Attributes[0] += connection.Name;
             Attributes[1] += connection.ServerName;
@@ -107,7 +110,7 @@ namespace sqlserver_sp_extractor.Menus
             Attributes[3] += connection.Login;
             Attributes[4] += connection.Password;
         }
-        private static void WriteConsole(bool saveError = false)
+        private void WriteConsole(bool saveError = false)
         {
             Console.Clear();
             for (int i = 0; i < Attributes.Count; i++)
@@ -126,17 +129,17 @@ namespace sqlserver_sp_extractor.Menus
             }
 
         }
-        private static void SelectNext() => selectedIndex = selectedIndex == 6 ? 0 : selectedIndex + 1;
-        private static void SelectPrevious() => selectedIndex = selectedIndex == 0 ? 6 : selectedIndex - 1;
-        private static void ConcatText(char c) => Attributes[selectedIndex] += c;
-        private static void RemoveText()
+        private void SelectNext() => selectedIndex = selectedIndex == 6 ? 0 : selectedIndex + 1;
+        private void SelectPrevious() => selectedIndex = selectedIndex == 0 ? 6 : selectedIndex - 1;
+        private void ConcatText(char c) => Attributes[selectedIndex] += c;
+        private void RemoveText()
         {
             if (Attributes[selectedIndex].Length > AttributesBaseLength[selectedIndex])
             {
                 Attributes[selectedIndex] = Attributes[selectedIndex][..^1];
             }
         }
-        private static bool Save()
+        private bool Save()
         {
             for (int i = 0; i < 4; i++)
             {
@@ -146,11 +149,11 @@ namespace sqlserver_sp_extractor.Menus
                 }
             }
 
-            string name = Attributes[0].Substring(AttributesBaseLength[0]);
-            string serverName = Attributes[1].Substring(AttributesBaseLength[1]);
-            string dataBase = Attributes[2].Substring(AttributesBaseLength[2]);
-            string login = Attributes[3].Substring(AttributesBaseLength[3]);
-            string password = Attributes[4].Substring(AttributesBaseLength[4]);
+            string name = Attributes[0][AttributesBaseLength[0]..];
+            string serverName = Attributes[1][AttributesBaseLength[1]..];
+            string dataBase = Attributes[2][AttributesBaseLength[2]..];
+            string login = Attributes[3][AttributesBaseLength[3]..];
+            string password = Attributes[4][AttributesBaseLength[4]..];
 
             Connection connection = new()
             {
@@ -161,7 +164,7 @@ namespace sqlserver_sp_extractor.Menus
                 Password = password
             };
 
-            ConnectionsService.CreateConnection(connection);
+            ConnectionsService.UpdateConnection(connection, currentConnectionIndex);
             running = false;
             new MainMenuCommand("").Execute();
 

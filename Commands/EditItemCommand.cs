@@ -1,22 +1,23 @@
 ﻿using sqlserver_sp_extractor.Menus;
 using sqlserver_sp_extractor.Models;
-using sqlserver_sp_extractor.Services;
+using System;
 
 namespace sqlserver_sp_extractor.Commands
 {
     public class EditItemCommand : Command
     {
-        private readonly string name;
-
-        public EditItemCommand(string name) : base(name)
+        private readonly Connection connection;
+        private readonly int index;
+        
+        public EditItemCommand(Connection connection, int index) : base(connection.Name)
         {
-            this.name = name;
+            this.connection = connection;
+            this.index = index;
         }
 
         public override void Execute()
         {
-            Connection connection = ConnectionsService.GetConnectionByName(name);
-            EditConnectionMenu.Show(connection);
+            new EditConnectionMenu().Show(connection, index);
         }
     }
 }

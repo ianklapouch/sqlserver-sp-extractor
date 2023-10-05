@@ -20,10 +20,7 @@ namespace sqlserver_sp_extractor.Services
 
         public void OpenConnection()
         {
-            if (connection == null)
-            {
-                connection = new SqlConnection(connectionString);
-            }
+            connection ??= new SqlConnection(connectionString);
 
             if (connection.State != ConnectionState.Open)
             {
@@ -41,7 +38,7 @@ namespace sqlserver_sp_extractor.Services
 
         public string GetStoredProcedureText(string procedureName)
         {
-            OpenConnection();
+            //OpenConnection();
             string query = "sp_helptext";
             SqlCommand command = new(query, connection)
             {

@@ -1,4 +1,5 @@
 ﻿using sqlserver_sp_extractor.Commands;
+using sqlserver_sp_extractor.Services;
 
 namespace sqlserver_sp_extractor.Menus
 {
@@ -10,7 +11,7 @@ namespace sqlserver_sp_extractor.Menus
 
             commandManager.AddCommand(new SelectConnectionCommand("Extract procedures"));
             commandManager.AddCommand(new ManageConnectionsCommand("Manage connections"));
-            commandManager.AddCommand(new OpenConfigurationFileCommand("Open configuration file"));
+            commandManager.AddCommand(new OpenFileCommand("Open configuration file", ConnectionsService.GetConnectionsFilePath()));
             commandManager.AddCommand(new ExitCommand("Exit"));
 
             bool running = true;
@@ -32,19 +33,23 @@ namespace sqlserver_sp_extractor.Menus
                         break;
 
                     case ConsoleKey.Tab:
-                        if (keyInfo.Modifiers == ConsoleModifiers.Shift)
+                        if (keyInfo.Modifiers != ConsoleModifiers.Shift)
                         {
-                            commandManager.SelectPrevious();
+                            commandManager.SelectNext();
                         }
                         else
                         {
-                            commandManager.SelectNext();
+                            commandManager.SelectPrevious();
                         }
                         break;
 
                     case ConsoleKey.Enter:
+
                         commandManager.ExecuteSelectedCommand();
-                        running = false;
+                        if (commandManager.selectedIndex != 2)
+                        {
+                            running = false;
+                        }
                         break;
                 }
             }

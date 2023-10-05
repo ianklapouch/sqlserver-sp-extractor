@@ -4,7 +4,7 @@ namespace sqlserver_sp_extractor.Menus
 {
     public class SuccessMenu
     {
-        public static void Show(int generated, int inserted, string outputFilesPath)
+        public static void Show(int generated, int inserted, string outputFilesPath, List<string> storedProceduresNotFound)
         {
 
             string menuTitleMessage;
@@ -15,13 +15,18 @@ namespace sqlserver_sp_extractor.Menus
             }
             else
             {
-                menuTitleMessage = $"{generated} of the {inserted} stored procedures were generated the \"Documents/SQLServerSpExtractor\" directory!";
+                menuTitleMessage = $"{generated} of the {inserted} stored procedures were generated the \"Documents/SQLServerSpExtractor\" directory! \n\n";
+                menuTitleMessage += "Stored Procedures not found: \n";
+                foreach (string storedProcedure in storedProceduresNotFound)
+                {
+                    menuTitleMessage += $"- {storedProcedure}\n";
+                }
             }
 
 
             CommandManager commandManager = new();
 
-            commandManager.AddCommand(new OpenOutputFilesDirectoryCommand("Open the output files directory"));
+            commandManager.AddCommand(new OpenFileCommand("Open the output files directory", outputFilesPath));
             commandManager.AddCommand(new MainMenuCommand("Return to main menu"));
             commandManager.AddCommand(new ExitCommand("Exit"));
 
@@ -55,8 +60,12 @@ namespace sqlserver_sp_extractor.Menus
                         break;
 
                     case ConsoleKey.Enter:
+
                         commandManager.ExecuteSelectedCommand();
-                        running = false;
+                        if (commandManager.selectedIndex != 0)
+                        {
+                            running = false;
+                        }
                         break;
                 }
             }

@@ -4,7 +4,7 @@ namespace sqlserver_sp_extractor.Menus
 {
     public class ErrorMenu
     {
-        public static void Show()
+        public static void Show(string message)
         {
             CommandManager commandManager = new();
 
@@ -15,7 +15,7 @@ namespace sqlserver_sp_extractor.Menus
 
             while (running)
             {
-                commandManager.DisplayMenu("No stored procedures found, check the name of the inserted procedures and the connection to the database!");
+                commandManager.DisplayMenu(message);
 
                 ConsoleKeyInfo keyInfo = Console.ReadKey(true);
 

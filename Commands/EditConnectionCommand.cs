@@ -16,8 +16,10 @@ namespace sqlserver_sp_extractor.Commands
             if (connections.Any())
             {
 
+
+
                 Command[] commands = connections
-                    .Select(connection => new DeleteItemCommand(connection.Name))
+                    .Select((connection, index) => new EditItemCommand(connection, index))
                     .ToArray();
 
                 commands = commands.Concat(new Command[] { new ManageConnectionsCommand("GoBack") }).ToArray();

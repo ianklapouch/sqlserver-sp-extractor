@@ -28,12 +28,24 @@ namespace sqlserver_sp_extractor.Menus
             int insertedStoredProcedures = storedProcedures.Count();
             int generatedStoredProcedures = 0;
 
+            List<string> storedProceduresNotFound = new();
+
             for (int i = 0; i < storedProcedures.Length; i++)
             {
                 storedProcedures[i] = storedProcedures[i].Trim();
             }
 
             DbService dbService = new(connection);
+
+            try
+            {
+                dbService.OpenConnection();
+            }
+            catch (Exception ex)
+            {
+                ErrorMenu.Show($"Error opening database connection, check connection and try again! \n\n {ex.Message}");
+                return;
+            }
 
             string outputDirectory = $"{connection.Name}_{DateTime.Now:yyyy-MM-dd_HHmmss}";
             string outputFilesPath = OutputFilesService.GetOutputFilesPath();
@@ -50,6 +62,9 @@ namespace sqlserver_sp_extractor.Menus
                     storedProcedureText = storedProcedureText.Replace("CREATE", "ALTER");
                     string filePath = Path.Combine(outputDirectoryPath, $"{storedProcedure}.sql");
                     File.WriteAllText(filePath, storedProcedureText);
+                } else
+                {
+                    storedProceduresNotFound.Add(storedProcedure);
                 }
             }
 
@@ -57,12 +72,11 @@ namespace sqlserver_sp_extractor.Menus
 
             if (generatedStoredProcedures > 0)
             {
-                SuccessMenu.Show(generatedStoredProcedures, insertedStoredProcedures, outputFilesPath);
+                SuccessMenu.Show(generatedStoredProcedures, insertedStoredProcedures, outputDirectoryPath, storedProceduresNotFound);
+                return;
             }
-            else
-            {
-                ErrorMenu.Show();
-            }
+
+            ErrorMenu.Show("No stored procedures found, check the name of the inserted procedures and the connection to the database!");
         }
     }
 }

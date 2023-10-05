@@ -36,15 +36,12 @@ namespace sqlserver_sp_extractor.Services
             Process.Start(startInfo);
         }
 
-      
-
         public static List<Connection> GetConnections()
         {
             string connectionsJson = File.ReadAllText(connectionsFilePath);
             return JsonConvert.DeserializeObject<List<Connection>>(connectionsJson) ?? new List<Connection>();
         }
 
-      
         public static void CreateConnection(Connection connection)
         {
             List<Connection> connections = GetConnections();
@@ -56,21 +53,24 @@ namespace sqlserver_sp_extractor.Services
             List<Connection> connections = GetConnections();
             return connections.FirstOrDefault(connection => connection.Name == name);
         }
-        public static void UpdateConnection(Connection connection)
+
+        public static void UpdateConnection(Connection connection, int index)
         {
             List<Connection> connections = GetConnections();
-            int connectionIndex = connections.FindIndex(c => c.Name == connection.Name);
-            if (connectionIndex != -1)
-            {
-                connections[connectionIndex] = connection;
-                SaveConnections(connections);
-            }
+            connections[index] = connection;
+            SaveConnections(connections);
         }
+
         public static void DeleteConnection(string name)
         {
             List<Connection> connections = GetConnections();
             connections.RemoveAll(connection => connection.Name == name);
             SaveConnections(connections);
+        }
+
+        public static string GetConnectionsFilePath()
+        {
+            return connectionsFilePath;
         }
     }
 }
