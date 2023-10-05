@@ -1,5 +1,5 @@
 # SQLServer Stored Procedure extractor
-Tool to automate stored procedure extraction in files from a SQL Server database.
+CLI tool to automate stored procedure extraction in files from a SQL Server database.
 
 ## Installation
 - **Download the Nupkg Folder**: First, download the Nupkg folder from the [latest release](https://github.com/ianklapouch/sqlserver-sp-extractor/releases)
