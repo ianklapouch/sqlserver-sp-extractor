@@ -11,12 +11,9 @@ namespace sqlserver_sp_extractor.Services
     public class DbService
     {
         readonly string connectionString;
-        private SqlConnection connection;
+        private SqlConnection? connection;
 
-        public DbService(Connection connection)
-        {
-            this.connectionString = $"Server={connection.ServerName};Database={connection.DataBase};User Id={connection.Login};Password={connection.Password};MultipleActiveResultSets=True";
-        }
+        public DbService(Connection connection) => connectionString = $"Server={connection.ServerName};Database={connection.DataBase};User Id={connection.Login};Password={connection.Password};MultipleActiveResultSets=True";
 
         public void OpenConnection()
         {

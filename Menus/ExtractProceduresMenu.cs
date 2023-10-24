@@ -7,20 +7,15 @@ namespace sqlserver_sp_extractor.Menus
     {
         public static void Show(Connection connection)
         {
-            bool running = true;
             string? storedProceduresString = string.Empty;
             Console.CursorVisible = true;
             Console.Clear();
             Console.WriteLine("Enter list of stored procedures (comma separated):");
 
-            while (running)
+            while (string.IsNullOrEmpty(storedProceduresString))
             {
                 storedProceduresString = Console.ReadLine();
-                if (!string.IsNullOrEmpty(storedProceduresString))
-                {
-                    running = false;
-                    Console.CursorVisible = false;
-                }
+                Console.CursorVisible = false;
             }
 
             string[] storedProcedures = storedProceduresString.Split(',');
@@ -62,7 +57,8 @@ namespace sqlserver_sp_extractor.Menus
                     storedProcedureText = storedProcedureText.Replace("CREATE", "ALTER");
                     string filePath = Path.Combine(outputDirectoryPath, $"{storedProcedure}.sql");
                     File.WriteAllText(filePath, storedProcedureText);
-                } else
+                }
+                else
                 {
                     storedProceduresNotFound.Add(storedProcedure);
                 }

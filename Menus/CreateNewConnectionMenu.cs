@@ -17,7 +17,7 @@ namespace sqlserver_sp_extractor.Menus
             "2.GoBack"
         };
 
-        private static List<int> AttributesBaseLength = new()
+        private static readonly List<int> AttributesBaseLength = new()
         {
             6,
             13,

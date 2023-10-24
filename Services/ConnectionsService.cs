@@ -38,6 +38,7 @@ namespace sqlserver_sp_extractor.Services
 
         public static List<Connection> GetConnections()
         {
+            
             string connectionsJson = File.ReadAllText(connectionsFilePath);
             return JsonConvert.DeserializeObject<List<Connection>>(connectionsJson) ?? new List<Connection>();
         }
