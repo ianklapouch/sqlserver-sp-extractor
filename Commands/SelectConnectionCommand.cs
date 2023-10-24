@@ -7,7 +7,7 @@ namespace sqlserver_sp_extractor.Commands
     internal class SelectConnectionCommand : Command
     {
         public SelectConnectionCommand(string name) : base(name) { }
-   
+
         public override void Execute()
         {
             List<Connection> connections = ConnectionsService.GetConnections();
@@ -21,6 +21,10 @@ namespace sqlserver_sp_extractor.Commands
                 commands = commands.Concat(new Command[] { new MainMenuCommand("GoBack") }).ToArray();
 
                 SelectConnectionMenu.Show(commands);
+            }
+            else
+            {
+                ErrorMenu.Show($"No connections found! \nCreate a connection in 'Manage connections' -> 'Create new connection'");
             }
         }
     }

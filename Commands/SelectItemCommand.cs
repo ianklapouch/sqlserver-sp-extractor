@@ -15,7 +15,7 @@ namespace sqlserver_sp_extractor.Commands
 
         public override void Execute()
         {
-            Connection connection = ConnectionsService.GetConnectionByName(name);
+            Connection? connection = ConnectionsService.GetConnectionByName(name);
             if (connection is not null)
             {
                 ExtractProceduresMenu.Show(connection);

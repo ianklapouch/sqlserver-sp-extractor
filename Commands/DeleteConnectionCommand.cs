@@ -24,6 +24,10 @@ namespace sqlserver_sp_extractor.Commands
 
                 SelectConnectionMenu.Show(commands);
             }
+            else
+            {
+                ErrorMenu.Show($"No connections found! \nCreate a connection in 'Manage connections' -> 'Create new connection'");
+            }
         }
     }
 }
