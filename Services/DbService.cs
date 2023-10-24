@@ -1,6 +1,4 @@
 ﻿using sqlserver_sp_extractor.Models;
-using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -35,7 +33,6 @@ namespace sqlserver_sp_extractor.Services
 
         public string GetStoredProcedureText(string procedureName)
         {
-            //OpenConnection();
             string query = "sp_helptext";
             SqlCommand command = new(query, connection)
             {

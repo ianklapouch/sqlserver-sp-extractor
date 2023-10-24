@@ -1,6 +1,5 @@
 ﻿using sqlserver_sp_extractor.Menus;
 using sqlserver_sp_extractor.Models;
-using System;
 
 namespace sqlserver_sp_extractor.Commands
 {

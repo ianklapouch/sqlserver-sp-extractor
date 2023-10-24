@@ -15,6 +15,10 @@ namespace sqlserver_sp_extractor.Services
             if (!Directory.Exists(connectionsDirectoryPath))
             {
                 Directory.CreateDirectory(connectionsDirectoryPath);
+            }
+
+            if (!File.Exists(connectionsFilePath))
+            {
                 List<Connection> connections = new();
                 string connectionsJson = JsonConvert.SerializeObject(connections, Formatting.Indented);
                 File.WriteAllText(connectionsFilePath, connectionsJson);
@@ -38,7 +42,6 @@ namespace sqlserver_sp_extractor.Services
 
         public static List<Connection> GetConnections()
         {
-            
             string connectionsJson = File.ReadAllText(connectionsFilePath);
             return JsonConvert.DeserializeObject<List<Connection>>(connectionsJson) ?? new List<Connection>();
         }
